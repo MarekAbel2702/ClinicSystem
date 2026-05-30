@@ -1,0 +1,128 @@
+﻿@model ClinicSystem.Models.Doctor
+
+@{
+    ViewData["Title"] = "Edytuj lekarza";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Edytuj lekarza</h1>
+        <p>Aktualizacja danych lekarza: Dr @Model.FirstName @Model.LastName.</p>
+    </div>
+
+    <div class="header-actions">
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-light">
+            <i class="bi bi-eye"></i>
+            Szczegóły
+        </a>
+
+        <a asp-action="Index" class="btn btn-light">
+            <i class="bi bi-arrow-left"></i>
+            Powrót
+        </a>
+    </div>
+</div>
+
+<div class="form-card">
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="form-section-title">
+            <i class="bi bi-person-badge"></i>
+            <div>
+                <h3>Dane lekarza</h3>
+                <p>Edytuj informacje personalne i zawodowe lekarza.</p>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="FirstName" class="form-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="LastName" class="form-label"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="LicenseNumber" class="form-label"></label>
+                <input asp-for="LicenseNumber" class="form-control" />
+                <span asp-validation-for="LicenseNumber" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="SpecializationId" class="form-label"></label>
+                <select asp-for="SpecializationId" class="form-select" asp-items="ViewBag.Specializations">
+                    <option value="">-- wybierz specjalizację --</option>
+                </select>
+                <span asp-validation-for="SpecializationId" class="text-danger"></span>
+            </div>
+        </div>
+
+        <hr class="section-divider" />
+
+        <div class="form-section-title">
+            <i class="bi bi-telephone"></i>
+            <div>
+                <h3>Kontakt i gabinet</h3>
+                <p>Zaktualizuj kontakt, gabinet i opis lekarza.</p>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label asp-for="PhoneNumber" class="form-label"></label>
+                <input asp-for="PhoneNumber" class="form-control" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="OfficeNumber" class="form-label"></label>
+                <input asp-for="OfficeNumber" class="form-control" />
+                <span asp-validation-for="OfficeNumber" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-12">
+                <label asp-for="Description" class="form-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-12">
+                <div class="form-check form-switch mt-2">
+                    <input asp-for="IsActive" class="form-check-input" />
+                    <label asp-for="IsActive" class="form-check-label"></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a asp-action="Index" class="btn btn-light">
+                Anuluj
+            </a>
+
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save"></i>
+                Zapisz zmiany
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

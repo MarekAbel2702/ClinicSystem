@@ -1,0 +1,229 @@
+﻿@model ClinicSystem.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Panel główny";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Panel główny</h1>
+        <p>Centrum zarządzania systemem przychodni lekarskiej.</p>
+    </div>
+
+    <div class="header-actions">
+        <a asp-controller="Appointments" asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-calendar-plus"></i>
+            Umów wizytę
+        </a>
+        <a asp-controller="Patients" asp-action="Create" class="btn btn-light">
+            <i class="bi bi-person-plus"></i>
+            Dodaj pacjenta
+        </a>
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card stat-blue">
+        <div class="stat-icon">
+            <i class="bi bi-people"></i>
+        </div>
+        <div>
+            <span>Pacjenci</span>
+            <h2>@Model.PatientsCount</h2>
+        </div>
+    </div>
+
+    <div class="stat-card stat-green">
+        <div class="stat-icon">
+            <i class="bi bi-person-badge"></i>
+        </div>
+        <div>
+            <span>Lekarze</span>
+            <h2>@Model.DoctorsCount</h2>
+        </div>
+    </div>
+
+    <div class="stat-card stat-purple">
+        <div class="stat-icon">
+            <i class="bi bi-hospital"></i>
+        </div>
+        <div>
+            <span>Specjalizacje</span>
+            <h2>@Model.SpecializationsCount</h2>
+        </div>
+    </div>
+
+    <div class="stat-card stat-orange">
+        <div class="stat-icon">
+            <i class="bi bi-calendar-check"></i>
+        </div>
+        <div>
+            <span>Wizyty</span>
+            <h2>@Model.AppointmentsCount</h2>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-grid">
+    <div class="panel-card">
+        <div class="panel-card-header">
+            <div>
+                <h3>Dzisiejszy plan wizyt</h3>
+                <p>Podsumowanie pracy przychodni</p>
+            </div>
+            <i class="bi bi-activity panel-icon"></i>
+        </div>
+
+        <div class="status-list">
+            <div class="status-item">
+                <span>Dzisiejsze wizyty</span>
+                <strong>@Model.TodayAppointmentsCount</strong>
+            </div>
+            <div class="status-item">
+                <span>Zaplanowane</span>
+                <strong>@Model.ScheduledAppointmentsCount</strong>
+            </div>
+            <div class="status-item">
+                <span>Zrealizowane</span>
+                <strong>@Model.CompletedAppointmentsCount</strong>
+            </div>
+            <div class="status-item">
+                <span>Odwołane</span>
+                <strong>@Model.CancelledAppointmentsCount</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-card">
+        <div class="panel-card-header">
+            <div>
+                <h3>Szybkie akcje</h3>
+                <p>Najczęściej używane operacje</p>
+            </div>
+            <i class="bi bi-lightning-charge panel-icon"></i>
+        </div>
+
+        <div class="quick-actions">
+            <a asp-controller="Patients" asp-action="Index">
+                <i class="bi bi-search"></i>
+                Lista pacjentów
+            </a>
+
+            <a asp-controller="Doctors" asp-action="Index">
+                <i class="bi bi-person-vcard"></i>
+                Lista lekarzy
+            </a>
+
+            <a asp-controller="Appointments" asp-action="Index">
+                <i class="bi bi-calendar-week"></i>
+                Terminarz wizyt
+            </a>
+
+            <a asp-controller="Specializations" asp-action="Index">
+                <i class="bi bi-diagram-3"></i>
+                Specjalizacje
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-grid mt-4">
+    <div class="panel-card">
+        <div class="panel-card-header">
+            <div>
+                <h3>Najbliższe wizyty</h3>
+                <p>Zaplanowane wizyty pacjentów</p>
+            </div>
+            <i class="bi bi-clock-history panel-icon"></i>
+        </div>
+
+        @if (Model.UpcomingAppointments.Any())
+        {
+            <div class="appointment-list">
+                @foreach (var appointment in Model.UpcomingAppointments)
+                {
+                    <div class="appointment-item">
+                        <div class="appointment-date">
+                            <strong>@appointment.AppointmentDate.ToString("dd.MM")</strong>
+                            <span>@appointment.AppointmentDate.ToString("HH:mm")</span>
+                        </div>
+
+                        <div class="appointment-info">
+                            <h4>@appointment.Patient?.FirstName @appointment.Patient?.LastName</h4>
+                            <p>
+                                Dr @appointment.Doctor?.FirstName @appointment.Doctor?.LastName
+                                @if (appointment.Doctor?.Specialization != null)
+                                {
+                                    <span> - @appointment.Doctor.Specialization.Name</span>
+                                }
+                            </p>
+                        </div>
+
+                        <span class="badge bg-primary">Zaplanowana</span>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <i class="bi bi-calendar-x"></i>
+                <p>Brak najbliższych wizyt.</p>
+            </div>
+        }
+    </div>
+
+    <div class="panel-card">
+        <div class="panel-card-header">
+            <div>
+                <h3>Ostatnio dodane wizyty</h3>
+                <p>Najnowsze wpisy w systemie</p>
+            </div>
+            <i class="bi bi-journal-medical panel-icon"></i>
+        </div>
+
+        @if (Model.RecentAppointments.Any())
+        {
+            <div class="appointment-list">
+                @foreach (var appointment in Model.RecentAppointments)
+                {
+                    <div class="appointment-item">
+                        <div class="appointment-date">
+                            <strong>@appointment.AppointmentDate.ToString("dd.MM")</strong>
+                            <span>@appointment.AppointmentDate.ToString("HH:mm")</span>
+                        </div>
+
+                        <div class="appointment-info">
+                            <h4>@appointment.Patient?.FirstName @appointment.Patient?.LastName</h4>
+                            <p>@appointment.Reason</p>
+                        </div>
+
+                        @if (appointment.Status == ClinicSystem.Models.AppointmentStatus.Scheduled)
+                        {
+                            <span class="badge bg-primary">Zaplanowana</span>
+                        }
+                        else if (appointment.Status == ClinicSystem.Models.AppointmentStatus.Completed)
+                        {
+                            <span class="badge bg-success">Zrealizowana</span>
+                        }
+                        else if (appointment.Status == ClinicSystem.Models.AppointmentStatus.Cancelled)
+                        {
+                            <span class="badge bg-danger">Odwołana</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">Nieobecność</span>
+                        }
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <i class="bi bi-inbox"></i>
+                <p>Brak wizyt w systemie.</p>
+            </div>
+        }
+    </div>
+</div>

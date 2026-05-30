@@ -1,0 +1,360 @@
+﻿@model ClinicSystem.ViewModels.HomePageViewModel
+
+@{
+    ViewData["Title"] = "Strona główna";
+    Layout = "~/Views/Shared/_PublicLayout.cshtml";
+}
+
+<section class="hero-section">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="public-container">
+            <div class="alert alert-success alert-dismissible fade show custom-alert mt-3" role="alert">
+                <i class="bi bi-check-circle"></i>
+                @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        </div>
+    }
+    <div class="public-container hero-grid">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <i class="bi bi-shield-check"></i>
+                Nowoczesna opieka medyczna
+            </div>
+
+            <h1>
+                Twoje zdrowie jest dla nas
+                <span>najważniejsze</span>
+            </h1>
+
+            <p>
+                MediClinic to nowoczesna przychodnia lekarska, która łączy profesjonalną
+                opiekę medyczną, komfortową rejestrację oraz cyfrowy system obsługi pacjentów.
+            </p>
+
+            <div class="hero-actions">
+                <a asp-controller="Appointments" asp-action="Create" class="btn btn-primary btn-lg">
+                    <i class="bi bi-calendar-plus"></i>
+                    Umów wizytę
+                </a>
+
+                <a href="#doctors" class="btn btn-light btn-lg">
+                    <i class="bi bi-person-badge"></i>
+                    Poznaj lekarzy
+                </a>
+            </div>
+
+            <div class="hero-features">
+                <div>
+                    <i class="bi bi-clock"></i>
+                    Szybka rejestracja
+                </div>
+
+                <div>
+                    <i class="bi bi-heart-pulse"></i>
+                    Doświadczeni lekarze
+                </div>
+
+                <div>
+                    <i class="bi bi-file-medical"></i>
+                    Historia wizyt
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-card">
+            <div class="hero-card-top">
+                <div>
+                    <span>Dzisiaj</span>
+                    <strong>Centrum zdrowia</strong>
+                </div>
+
+                <i class="bi bi-hospital"></i>
+            </div>
+
+            <div class="hero-doctor">
+                <div class="hero-doctor-avatar">
+                    <i class="bi bi-person-heart"></i>
+                </div>
+
+                <div>
+                    <h3>Opieka specjalistyczna</h3>
+                    <p>Konsultacje, diagnostyka, profilaktyka i kontrola leczenia.</p>
+                </div>
+            </div>
+
+            <div class="hero-mini-stats">
+                <div>
+                    <strong>@Model.DoctorsCount</strong>
+                    <span>Lekarzy</span>
+                </div>
+
+                <div>
+                    <strong>@Model.SpecializationsCount</strong>
+                    <span>Specjalizacji</span>
+                </div>
+
+                <div>
+                    <strong>@Model.PatientsCount</strong>
+                    <span>Pacjentów</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="public-stats-section">
+    <div class="public-container public-stats-grid">
+        <div class="public-stat">
+            <i class="bi bi-people"></i>
+            <strong>@Model.PatientsCount</strong>
+            <span>Zarejestrowanych pacjentów</span>
+        </div>
+
+        <div class="public-stat">
+            <i class="bi bi-person-badge"></i>
+            <strong>@Model.DoctorsCount</strong>
+            <span>Aktywnych lekarzy</span>
+        </div>
+
+        <div class="public-stat">
+            <i class="bi bi-diagram-3"></i>
+            <strong>@Model.SpecializationsCount</strong>
+            <span>Specjalizacji</span>
+        </div>
+
+        <div class="public-stat">
+            <i class="bi bi-calendar-check"></i>
+            <strong>@Model.AppointmentsCount</strong>
+            <span>Obsłużonych wizyt</span>
+        </div>
+    </div>
+</section>
+
+<section id="services" class="public-section">
+    <div class="public-container">
+        <div class="section-heading">
+            <span>Nasze usługi</span>
+            <h2>Kompleksowa opieka dla pacjentów</h2>
+            <p>
+                Oferujemy konsultacje lekarskie, diagnostykę, profilaktykę oraz prowadzenie dokumentacji medycznej.
+            </p>
+        </div>
+
+        <div class="services-grid">
+            <div class="service-card">
+                <i class="bi bi-heart-pulse"></i>
+                <h3>Konsultacje internistyczne</h3>
+                <p>Diagnostyka, leczenie i kontrola stanu zdrowia osób dorosłych.</p>
+            </div>
+
+            <div class="service-card">
+                <i class="bi bi-bandaid"></i>
+                <h3>Opieka specjalistyczna</h3>
+                <p>Dostęp do lekarzy wielu specjalizacji w jednym miejscu.</p>
+            </div>
+
+            <div class="service-card">
+                <i class="bi bi-clipboard2-pulse"></i>
+                <h3>Historia leczenia</h3>
+                <p>Bezpieczne przechowywanie informacji o wizytach, diagnozach i zaleceniach.</p>
+            </div>
+
+            <div class="service-card">
+                <i class="bi bi-calendar2-check"></i>
+                <h3>Rejestracja wizyt</h3>
+                <p>Sprawne umawianie terminów oraz zarządzanie harmonogramem lekarzy.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="doctors" class="public-section doctors-public-section">
+    <div class="public-container">
+        <div class="section-heading">
+            <span>Nasi lekarze</span>
+            <h2>Poznaj specjalistów MediClinic</h2>
+            <p>
+                Zespół aktywnych lekarzy dostępnych w systemie przychodni.
+            </p>
+        </div>
+
+        @if (Model.FeaturedDoctors.Any())
+        {
+            <div class="public-doctors-grid">
+                @foreach (var doctor in Model.FeaturedDoctors)
+                {
+                    <div class="public-doctor-card">
+                        <div class="public-doctor-avatar">
+                            @doctor.FirstName.Substring(0, 1)@doctor.LastName.Substring(0, 1)
+                        </div>
+
+                        <h3>Dr @doctor.FirstName @doctor.LastName</h3>
+
+                        <span>
+                            <i class="bi bi-heart-pulse"></i>
+                            @(doctor.Specialization?.Name ?? "Lekarz")
+                        </span>
+
+                        <p>
+                            @(string.IsNullOrWhiteSpace(doctor.Description)
+                                                ? "Lekarz przychodni MediClinic zapewniający profesjonalną opiekę medyczną."
+                                                : doctor.Description)
+                </p>
+
+                        <div class="public-doctor-footer">
+                            <small>
+                                <i class="bi bi-door-open"></i>
+                                Gabinet @(string.IsNullOrWhiteSpace(doctor.OfficeNumber) ? "—" : doctor.OfficeNumber)
+                            </small>
+
+                            <a asp-controller="Appointments" asp-action="Create" asp-route-doctorId="@doctor.Id">
+                                Umów
+                            </a>
+                        </div>
+                    </div>
+                        }
+            </div>
+        }
+        else
+        {
+            <div class="public-empty">
+                <i class="bi bi-person-badge"></i>
+                <h3>Brak lekarzy do wyświetlenia</h3>
+                <p>Dodaj lekarzy w panelu administracyjnym, aby pojawili się na stronie publicznej.</p>
+            </div>
+        }
+    </div>
+</section>
+
+<section id="about" class="public-section about-section">
+    <div class="public-container about-grid">
+        <div>
+            <span class="section-small-label">Dlaczego my?</span>
+            <h2>Nowoczesna przychodnia z cyfrowym systemem obsługi</h2>
+
+            <p>
+                MediClinic pozwala wygodnie zarządzać pacjentami, lekarzami, specjalizacjami oraz wizytami.
+                System wspiera codzienną pracę rejestracji, lekarzy i administracji.
+            </p>
+
+            <div class="about-list">
+                <div>
+                    <i class="bi bi-check-circle"></i>
+                    Centralna baza pacjentów
+                </div>
+
+                <div>
+                    <i class="bi bi-check-circle"></i>
+                    Terminarz wizyt
+                </div>
+
+                <div>
+                    <i class="bi bi-check-circle"></i>
+                    Historia leczenia
+                </div>
+
+                <div>
+                    <i class="bi bi-check-circle"></i>
+                    Profile lekarzy i specjalizacji
+                </div>
+            </div>
+        </div>
+
+        <div class="about-card">
+            <div class="about-card-icon">
+                <i class="bi bi-heart-pulse"></i>
+            </div>
+
+            <h3>Wygodna obsługa pacjentów każdego dnia</h3>
+
+            <p>
+                Korzystamy z nowoczesnego systemu, który ułatwia umawianie wizyt,
+                prowadzenie dokumentacji oraz sprawną organizację pracy lekarzy.
+                Dzięki temu pacjent szybciej trafia do odpowiedniego specjalisty.
+            </p>
+
+            <a asp-controller="Dashboard" asp-action="Index" class="btn btn-primary">
+                Przejdź do panelu
+            </a>
+        </div>
+    </div>
+</section>
+
+<section id="contact" class="contact-section">
+    <div class="public-container contact-grid">
+        <div>
+            <span class="section-small-label">Kontakt</span>
+            <h2>Skontaktuj się z przychodnią</h2>
+
+            <p>
+                Masz pytanie, chcesz umówić wizytę lub sprawdzić dostępność lekarza?
+                Skorzystaj z danych kontaktowych albo przejdź do formularza rejestracji wizyty.
+            </p>
+
+            <div class="contact-list">
+                <div>
+                    <i class="bi bi-geo-alt"></i>
+                    <span>ul. Zdrowa 12, 00-001 Warszawa</span>
+                </div>
+
+                <div>
+                    <i class="bi bi-telephone"></i>
+                    <span>500 600 700</span>
+                </div>
+
+                <div>
+                    <i class="bi bi-envelope"></i>
+                    <span>kontakt@mediclinic.pl</span>
+                </div>
+
+                <div>
+                    <i class="bi bi-clock"></i>
+                    <span>Poniedziałek - Piątek, 08:00 - 20:00</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="contact-card">
+            <h3>Godziny otwarcia</h3>
+
+            <div class="hours-list">
+                <div>
+                    <span>Poniedziałek</span>
+                    <strong>08:00 - 20:00</strong>
+                </div>
+
+                <div>
+                    <span>Wtorek</span>
+                    <strong>08:00 - 20:00</strong>
+                </div>
+
+                <div>
+                    <span>Środa</span>
+                    <strong>08:00 - 20:00</strong>
+                </div>
+
+                <div>
+                    <span>Czwartek</span>
+                    <strong>08:00 - 20:00</strong>
+                </div>
+
+                <div>
+                    <span>Piątek</span>
+                    <strong>08:00 - 18:00</strong>
+                </div>
+
+                <div>
+                    <span>Sobota</span>
+                    <strong>09:00 - 14:00</strong>
+                </div>
+            </div>
+
+            <a asp-controller="Appointments" asp-action="Create" class="btn btn-primary w-100 mt-4">
+                <i class="bi bi-calendar-plus"></i>
+                Umów wizytę
+            </a>
+        </div>
+    </div>
+</section>

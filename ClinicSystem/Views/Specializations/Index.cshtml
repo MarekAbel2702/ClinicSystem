@@ -1,0 +1,120 @@
+﻿@model IEnumerable<ClinicSystem.Models.Specialization>
+
+@{
+    ViewData["Title"] = "Specjalizacje";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Specjalizacje</h1>
+        <p>Zarządzanie specjalizacjami lekarskimi dostępnymi w przychodni.</p>
+    </div>
+
+    <div class="header-actions">
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i>
+            Dodaj specjalizację
+        </a>
+    </div>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show custom-alert" role="alert">
+        <i class="bi bi-check-circle"></i>
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show custom-alert" role="alert">
+        <i class="bi bi-exclamation-triangle"></i>
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="table-card">
+    <div class="table-toolbar">
+        <div>
+            <h3>Lista specjalizacji</h3>
+            <p>Wyszukuj, edytuj i kontroluj specjalizacje przypisane lekarzom.</p>
+        </div>
+
+        <form asp-action="Index" method="get" class="table-search">
+            <i class="bi bi-search"></i>
+
+            <input type="text"
+                   name="searchString"
+                   value="@ViewData["CurrentFilter"]"
+                   placeholder="Szukaj specjalizacji..." />
+
+            <button type="submit" class="btn btn-primary">
+                Szukaj
+            </button>
+
+            <a asp-action="Index" class="btn btn-light">
+                Wyczyść
+            </a>
+        </form>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="specialization-grid">
+            @foreach (var specialization in Model)
+            {
+                <div class="specialization-card">
+                    <div class="specialization-icon">
+                        <i class="bi bi-heart-pulse"></i>
+                    </div>
+
+                    <div class="specialization-content">
+                        <h3>@specialization.Name</h3>
+
+                        <p>
+                            @(string.IsNullOrWhiteSpace(specialization.Description)
+                                                ? "Brak opisu specjalizacji."
+                                                : specialization.Description)
+                </p>
+
+                        <div class="specialization-meta">
+                            <span>
+                                <i class="bi bi-person-badge"></i>
+                                Lekarze: @specialization.Doctors.Count
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="specialization-actions">
+                        <a asp-action="Details" asp-route-id="@specialization.Id" class="btn btn-light">
+                            <i class="bi bi-eye"></i>
+                            Szczegóły
+                        </a>
+
+                        <a asp-action="Edit" asp-route-id="@specialization.Id" class="btn btn-light">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+
+                        <a asp-action="Delete" asp-route-id="@specialization.Id" class="btn btn-danger">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </div>
+                </div>
+                }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <i class="bi bi-diagram-3"></i>
+            <p>Brak specjalizacji w systemie.</p>
+
+            <a asp-action="Create" class="btn btn-primary mt-3">
+                Dodaj pierwszą specjalizację
+            </a>
+        </div>
+    }
+</div>

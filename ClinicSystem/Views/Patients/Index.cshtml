@@ -1,0 +1,151 @@
+﻿@model IEnumerable<ClinicSystem.Models.Patient>
+
+@{
+    ViewData["Title"] = "Pacjenci";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Pacjenci</h1>
+        <p>Zarządzanie kartoteką pacjentów przychodni.</p>
+    </div>
+
+    <div class="header-actions">
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-person-plus"></i>
+            Dodaj pacjenta
+        </a>
+    </div>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show custom-alert" role="alert">
+        <i class="bi bi-check-circle"></i>
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show custom-alert" role="alert">
+        <i class="bi bi-exclamation-triangle"></i>
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="table-card">
+    <div class="table-toolbar">
+        <div>
+            <h3>Lista pacjentów</h3>
+            <p>Wyszukuj po imieniu, nazwisku, PESEL-u, telefonie lub e-mailu.</p>
+        </div>
+
+        <form asp-action="Index" method="get" class="table-search">
+            <i class="bi bi-search"></i>
+            <input type="text"
+                   name="searchString"
+                   value="@ViewData["CurrentFilter"]"
+                   placeholder="Szukaj pacjenta..." />
+
+            <button type="submit" class="btn btn-primary">
+                Szukaj
+            </button>
+
+            <a asp-action="Index" class="btn btn-light">
+                Wyczyść
+            </a>
+        </form>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table align-middle modern-table">
+                <thead>
+                    <tr>
+                        <th>Pacjent</th>
+                        <th>PESEL</th>
+                        <th>Data urodzenia</th>
+                        <th>Kontakt</th>
+                        <th>Data rejestracji</th>
+                        <th class="text-end">Akcje</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var patient in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="person-cell">
+                                    <div class="person-avatar">
+                                        @patient.FirstName.Substring(0, 1)@patient.LastName.Substring(0, 1)
+                                    </div>
+                                    <div>
+                                        <strong>@patient.FirstName @patient.LastName</strong>
+                                        <span>@patient.Address</span>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="text-code">@patient.PESEL
+                                </span>
+                            </td>
+
+                            <td>
+                                @patient.DateOfBirth.ToString("dd.MM.yyyy")
+                            </td>
+
+                            <td>
+                                <div class="contact-cell">
+                                    @if (!string.IsNullOrWhiteSpace(patient.PhoneNumber))
+                                    {
+                                        <span><i class="bi bi-telephone"></i> @patient.PhoneNumber</span>
+                                    }
+
+                                    @if (!string.IsNullOrWhiteSpace(patient.Email))
+                                    {
+                                        <span><i class="bi bi-envelope"></i> @patient.Email</span>
+                                    }
+                                </div>
+                            </td>
+
+                            <td>
+                                @patient.CreatedAt.ToString("dd.MM.yyyy")
+                            </td>
+
+                            <td>
+                                <div class="action-buttons">
+                                    <a asp-action="Details" asp-route-id="@patient.Id" class="btn btn-light" title="Szczegóły">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+
+                                    <a asp-action="Edit" asp-route-id="@patient.Id" class="btn btn-light" title="Edytuj">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+
+                                    <a asp-action="Delete" asp-route-id="@patient.Id" class="btn btn-danger" title="Usuń">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <i class="bi bi-people"></i>
+            <p>Brak pacjentów w systemie.</p>
+            <a asp-action="Create" class="btn btn-primary mt-3">
+                Dodaj pierwszego pacjenta
+            </a>
+        </div>
+    }
+</div>

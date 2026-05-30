@@ -1,0 +1,70 @@
+﻿@model ClinicSystem.Models.Appointment
+
+@{
+    ViewData["Title"] = "Usuń wizytę";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Usuń wizytę</h1>
+        <p>Potwierdź usunięcie wizyty z terminarza.</p>
+    </div>
+
+    <div class="header-actions">
+        <a asp-action="Index" class="btn btn-light">
+            <i class="bi bi-arrow-left"></i>
+            Powrót
+        </a>
+    </div>
+</div>
+
+<div class="danger-card">
+    <div class="danger-icon">
+        <i class="bi bi-exclamation-triangle"></i>
+    </div>
+
+    <div>
+        <h2>Czy na pewno chcesz usunąć tę wizytę?</h2>
+        <p>
+            Operacja jest nieodwracalna. Usunięta wizyta zniknie z historii pacjenta
+            oraz z terminarza lekarza.
+        </p>
+    </div>
+</div>
+
+<div class="info-card mt-4">
+    <div class="info-list">
+        <div class="info-row">
+            <span>Termin</span>
+            <strong>@Model.AppointmentDate.ToString("dd.MM.yyyy HH:mm")</strong>
+        </div>
+
+        <div class="info-row">
+            <span>Pacjent</span>
+            <strong>@Model.Patient?.FirstName @Model.Patient?.LastName</strong>
+        </div>
+
+        <div class="info-row">
+            <span>Lekarz</span>
+            <strong>Dr @Model.Doctor?.FirstName @Model.Doctor?.LastName</strong>
+        </div>
+
+        <div class="info-row">
+            <span>Powód</span>
+            <strong>@Model.Reason</strong>
+        </div>
+    </div>
+
+    <form asp-action="Delete" method="post" class="form-actions">
+        <input type="hidden" asp-for="Id" />
+
+        <a asp-action="Index" class="btn btn-light">
+            Anuluj
+        </a>
+
+        <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash"></i>
+            Usuń wizytę
+        </button>
+    </form>
+</div>

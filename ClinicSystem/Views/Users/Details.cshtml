@@ -1,0 +1,115 @@
+﻿@model ClinicSystem.ViewModels.UserRoleViewModel
+
+@{
+    ViewData["Title"] = "Szczegóły użytkownika";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Szczegóły użytkownika</h1>
+        <p>Informacje o koncie i aktualnych uprawnieniach.</p>
+    </div>
+
+    <div class="header-actions">
+        <a asp-action="EditRole" asp-route-id="@Model.UserId" class="btn btn-primary">
+            <i class="bi bi-shield-check"></i>
+            Zmień rolę
+        </a>
+
+        <a asp-action="Index" class="btn btn-light">
+            <i class="bi bi-arrow-left"></i>
+            Powrót
+        </a>
+    </div>
+</div>
+
+<div class="details-grid">
+    <div class="profile-card">
+        <div class="profile-avatar">
+            @{
+                var firstInitial = string.IsNullOrWhiteSpace(Model.FirstName) ? "U" : Model.FirstName.Substring(0, 1);
+                var lastInitial = string.IsNullOrWhiteSpace(Model.LastName) ? "" : Model.LastName.Substring(0, 1);
+            }
+            @firstInitial@lastInitial
+        </div>
+
+        <h2>
+            @(string.IsNullOrWhiteSpace(Model.FirstName + Model.LastName)
+                        ? "Użytkownik systemu"
+                        : $"{Model.FirstName} {Model.LastName}")
+        </h2>
+
+        <p>@Model.Email</p>
+
+        @if (Model.CurrentRole == "Administrator")
+        {
+            <span class="large-status appointment-status-blue">
+                <i class="bi bi-shield-fill-check"></i>
+                Administrator
+            </span>
+        }
+        else if (Model.CurrentRole == "Recepcjonista")
+        {
+            <span class="large-status active">
+                <i class="bi bi-person-vcard"></i>
+                Recepcjonista
+            </span>
+        }
+        else if (Model.CurrentRole == "Lekarz")
+        {
+            <span class="large-status appointment-status-warning">
+                <i class="bi bi-person-badge"></i>
+                Lekarz
+            </span>
+        }
+        else
+        {
+            <span class="large-status inactive">
+                <i class="bi bi-person"></i>
+                @Model.CurrentRole
+            </span>
+        }
+    </div>
+
+    <div class="info-card">
+        <div class="panel-card-header">
+            <div>
+                <h3>Dane konta</h3>
+                <p>Podstawowe informacje użytkownika.</p>
+            </div>
+            <i class="bi bi-person-lines-fill panel-icon"></i>
+        </div>
+
+        <div class="info-list">
+            <div class="info-row">
+                <span>Imię</span>
+                <strong>@(string.IsNullOrWhiteSpace(Model.FirstName) ? "Brak" : Model.FirstName)</strong>
+            </div>
+
+            <div class="info-row">
+                <span>Nazwisko</span>
+                <strong>@(string.IsNullOrWhiteSpace(Model.LastName) ? "Brak" : Model.LastName)</strong>
+            </div>
+
+            <div class="info-row">
+                <span>E-mail</span>
+                <strong>@Model.Email</strong>
+            </div>
+
+            <div class="info-row">
+                <span>Rola</span>
+                <strong>@Model.CurrentRole</strong>
+            </div>
+
+            <div class="info-row">
+                <span>Data utworzenia</span>
+                <strong>@Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")</strong>
+            </div>
+
+            <div class="info-row">
+                <span>ID użytkownika</span>
+                <strong>@Model.UserId</strong>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,79 @@
+﻿@model ClinicSystem.Models.Patient
+
+@{
+    ViewData["Title"] = "Usuń pacjenta";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Usuń pacjenta</h1>
+        <p>Potwierdź usunięcie pacjenta z systemu.</p>
+    </div>
+
+    <div class="header-actions">
+        <a asp-action="Index" class="btn btn-light">
+            <i class="bi bi-arrow-left"></i>
+            Powrót
+        </a>
+    </div>
+</div>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show custom-alert" role="alert">
+        <i class="bi bi-exclamation-triangle"></i>
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="danger-card">
+    <div class="danger-icon">
+        <i class="bi bi-exclamation-triangle"></i>
+    </div>
+
+    <div>
+        <h2>Czy na pewno chcesz usunąć tego pacjenta?</h2>
+        <p>
+            Ta operacja jest nieodwracalna. Pacjenta można usunąć tylko wtedy,
+            gdy nie ma przypisanych żadnych wizyt.
+        </p>
+    </div>
+</div>
+
+<div class="info-card mt-4">
+    <div class="info-list">
+        <div class="info-row">
+            <span>Pacjent</span>
+            <strong>@Model.FirstName @Model.LastName</strong>
+        </div>
+
+        <div class="info-row">
+            <span>PESEL</span>
+            <strong>@Model.PESEL</strong>
+        </div>
+
+        <div class="info-row">
+            <span>Data urodzenia</span>
+            <strong>@Model.DateOfBirth.ToString("dd.MM.yyyy")</strong>
+        </div>
+
+        <div class="info-row">
+            <span>Liczba wizyt</span>
+            <strong>@Model.Appointments.Count</strong>
+        </div>
+    </div>
+
+    <form asp-action="Delete" method="post" class="form-actions">
+        <input type="hidden" asp-for="Id" />
+
+        <a asp-action="Index" class="btn btn-light">
+            Anuluj
+        </a>
+
+        <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash"></i>
+            Usuń pacjenta
+        </button>
+    </form>
+</div>

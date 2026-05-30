@@ -1,0 +1,147 @@
+﻿@model ClinicSystem.Models.Specialization
+
+@{
+    ViewData["Title"] = "Szczegóły specjalizacji";
+}
+
+<div class="page-header">
+    <div>
+        <h1>@Model.Name</h1>
+        <p>Szczegóły specjalizacji oraz lista przypisanych lekarzy.</p>
+    </div>
+
+    <div class="header-actions">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+            <i class="bi bi-pencil"></i>
+            Edytuj
+        </a>
+
+        <a asp-action="Index" class="btn btn-light">
+            <i class="bi bi-arrow-left"></i>
+            Powrót
+        </a>
+    </div>
+</div>
+
+<div class="details-grid">
+    <div class="profile-card specialization-profile">
+        <div class="profile-avatar">
+            <i class="bi bi-heart-pulse"></i>
+        </div>
+
+        <h2>@Model.Name</h2>
+        <p>Specjalizacja lekarska</p>
+
+        <div class="profile-tags">
+            <span>
+                <i class="bi bi-person-badge"></i>
+                Lekarze: @Model.Doctors.Count
+            </span>
+
+            <span>
+                <i class="bi bi-calendar-check"></i>
+                Wizyty: @Model.Doctors.Sum(d => d.Appointments.Count)
+            </span>
+        </div>
+    </div>
+
+    <div class="info-card">
+        <div class="panel-card-header">
+            <div>
+                <h3>Opis specjalizacji</h3>
+                <p>Informacje medyczne i organizacyjne.</p>
+            </div>
+            <i class="bi bi-file-medical panel-icon"></i>
+        </div>
+
+        <p class="description-text">
+            @(string.IsNullOrWhiteSpace(Model.Description) ? "Brak opisu specjalizacji." : Model.Description)
+        </p>
+    </div>
+</div>
+
+<div class="panel-card mt-4">
+    <div class="panel-card-header">
+        <div>
+            <h3>Lekarze w tej specjalizacji</h3>
+            <p>Personel medyczny przypisany do specjalizacji.</p>
+        </div>
+
+        <i class="bi bi-person-badge panel-icon"></i>
+    </div>
+
+    @if (Model.Doctors.Any())
+    {
+        <div class="table-responsive">
+            <table class="table modern-table">
+                <thead>
+                    <tr>
+                        <th>Lekarz</th>
+                        <th>PWZ</th>
+                        <th>Gabinet</th>
+                        <th>Status</th>
+                        <th class="text-end">Akcje</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var doctor in Model.Doctors.OrderBy(d => d.LastName))
+                    {
+                        <tr>
+                            <td>
+                                <div class="person-cell">
+                                    <div class="person-avatar">
+                                        @doctor.FirstName.Substring(0, 1)@doctor.LastName.Substring(0, 1)
+                                    </div>
+
+                                    <div>
+                                        <strong>Dr @doctor.FirstName @doctor.LastName</strong>
+                                        <span>@doctor.Email</span>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="text-code">@doctor.LicenseNumber</span>
+                            </td>
+
+                            <td>
+                                @(string.IsNullOrWhiteSpace(doctor.OfficeNumber) ? "Brak" : doctor.OfficeNumber)
+                            </td>
+
+                            <td>
+                                @if (doctor.IsActive)
+                                {
+                                    <span class="badge bg-success">Aktywny</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Nieaktywny</span>
+                                }
+                            </td>
+
+                            <td>
+                                <div class="action-buttons">
+                                    <a asp-controller="Doctors" asp-action="Details" asp-route-id="@doctor.Id" class="btn btn-light">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+
+                                    <a asp-controller="Doctors" asp-action="Edit" asp-route-id="@doctor.Id" class="btn btn-light">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <i class="bi bi-person-x"></i>
+            <p>Do tej specjalizacji nie przypisano jeszcze żadnego lekarza.</p>
+        </div>
+    }
+</div>

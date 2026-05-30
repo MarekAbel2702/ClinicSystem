@@ -1,0 +1,160 @@
+﻿@model ClinicSystem.Models.Patient
+
+@{
+    ViewData["Title"] = "Szczegóły pacjenta";
+}
+
+<div class="page-header">
+    <div>
+        <h1>@Model.FirstName @Model.LastName</h1>
+        <p>Szczegółowa kartoteka pacjenta oraz historia wizyt.</p>
+    </div>
+
+    <div class="header-actions">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+            <i class="bi bi-pencil"></i>
+            Edytuj
+        </a>
+
+        <a asp-controller="Appointments" asp-action="Create" asp-route-patientId="@Model.Id" class="btn btn-light">
+            <i class="bi bi-calendar-plus"></i>
+            Umów wizytę
+        </a>
+
+        <a asp-action="Index" class="btn btn-light">
+            <i class="bi bi-arrow-left"></i>
+            Powrót
+        </a>
+    </div>
+</div>
+
+<div class="details-grid">
+    <div class="profile-card">
+        <div class="profile-avatar">
+            @Model.FirstName.Substring(0, 1)@Model.LastName.Substring(0, 1)
+        </div>
+
+        <h2>@Model.FirstName @Model.LastName</h2>
+        <p>Pacjent przychodni</p>
+
+        <div class="profile-tags">
+            <span><i class="bi bi-credit-card-2-front"></i> @Model.PESEL</span>
+            <span><i class="bi bi-calendar3"></i> @Model.DateOfBirth.ToString("dd.MM.yyyy")</span>
+        </div>
+    </div>
+
+    <div class="info-card">
+        <div class="panel-card-header">
+            <div>
+                <h3>Dane pacjenta</h3>
+                <p>Informacje zapisane w kartotece.</p>
+            </div>
+            <i class="bi bi-person-lines-fill panel-icon"></i>
+        </div>
+
+        <div class="info-list">
+            <div class="info-row">
+                <span>Imię</span>
+                <strong>@Model.FirstName</strong>
+            </div>
+
+            <div class="info-row">
+                <span>Nazwisko</span>
+                <strong>@Model.LastName</strong>
+            </div>
+
+            <div class="info-row">
+                <span>PESEL</span>
+                <strong>@Model.PESEL</strong>
+            </div>
+
+            <div class="info-row">
+                <span>Data urodzenia</span>
+                <strong>@Model.DateOfBirth.ToString("dd.MM.yyyy")</strong>
+            </div>
+
+            <div class="info-row">
+                <span>Telefon</span>
+                <strong>@(string.IsNullOrWhiteSpace(Model.PhoneNumber) ? "Brak" : Model.PhoneNumber)</strong>
+            </div>
+
+            <div class="info-row">
+                <span>E-mail</span>
+                <strong>@(string.IsNullOrWhiteSpace(Model.Email) ? "Brak" : Model.Email)</strong>
+            </div>
+
+            <div class="info-row">
+                <span>Adres</span>
+                <strong>@(string.IsNullOrWhiteSpace(Model.Address) ? "Brak" : Model.Address)</strong>
+            </div>
+
+            <div class="info-row">
+                <span>Data rejestracji</span>
+                <strong>@Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")</strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="panel-card mt-4">
+    <div class="panel-card-header">
+        <div>
+            <h3>Historia wizyt</h3>
+            <p>Wszystkie wizyty przypisane do pacjenta.</p>
+        </div>
+        <i class="bi bi-journal-medical panel-icon"></i>
+    </div>
+
+    @if (Model.Appointments.Any())
+    {
+        <div class="table-responsive">
+            <table class="table modern-table">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Lekarz</th>
+                        <th>Specjalizacja</th>
+                        <th>Powód</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var appointment in Model.Appointments.OrderByDescending(a => a.AppointmentDate))
+                    {
+                        <tr>
+                            <td>@appointment.AppointmentDate.ToString("dd.MM.yyyy HH:mm")</td>
+                            <td>Dr @appointment.Doctor?.FirstName @appointment.Doctor?.LastName</td>
+                            <td>@appointment.Doctor?.Specialization?.Name</td>
+                            <td>@appointment.Reason</td>
+                            <td>
+                                @if (appointment.Status == ClinicSystem.Models.AppointmentStatus.Scheduled)
+                                {
+                                    <span class="badge bg-primary">Zaplanowana</span>
+                                }
+                                else if (appointment.Status == ClinicSystem.Models.AppointmentStatus.Completed)
+                                {
+                                    <span class="badge bg-success">Zrealizowana</span>
+                                }
+                                else if (appointment.Status == ClinicSystem.Models.AppointmentStatus.Cancelled)
+                                {
+                                    <span class="badge bg-danger">Odwołana</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark">Nieobecność</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <i class="bi bi-calendar-x"></i>
+            <p>Ten pacjent nie ma jeszcze żadnych wizyt.</p>
+        </div>
+    }
+</div>

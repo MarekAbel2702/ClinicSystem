@@ -1,0 +1,113 @@
+﻿@model ClinicSystem.Models.Patient
+
+@{
+    ViewData["Title"] = "Edytuj pacjenta";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Edytuj pacjenta</h1>
+        <p>Aktualizacja danych pacjenta: @Model.FirstName @Model.LastName.</p>
+    </div>
+
+    <div class="header-actions">
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-light">
+            <i class="bi bi-eye"></i>
+            Szczegóły
+        </a>
+
+        <a asp-action="Index" class="btn btn-light">
+            <i class="bi bi-arrow-left"></i>
+            Powrót
+        </a>
+    </div>
+</div>
+
+<div class="form-card">
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="form-section-title">
+            <i class="bi bi-person-vcard"></i>
+            <div>
+                <h3>Dane podstawowe</h3>
+                <p>Edytuj dane identyfikacyjne pacjenta.</p>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="FirstName" class="form-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="LastName" class="form-label"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="PESEL" class="form-label"></label>
+                <input asp-for="PESEL" class="form-control" maxlength="11" />
+                <span asp-validation-for="PESEL" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="DateOfBirth" class="form-label"></label>
+                <input asp-for="DateOfBirth" class="form-control" type="date" />
+                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+            </div>
+        </div>
+
+        <hr class="section-divider" />
+
+        <div class="form-section-title">
+            <i class="bi bi-telephone"></i>
+            <div>
+                <h3>Dane kontaktowe</h3>
+                <p>Zaktualizuj dane kontaktowe pacjenta.</p>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="PhoneNumber" class="form-label"></label>
+                <input asp-for="PhoneNumber" class="form-control" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-12">
+                <label asp-for="Address" class="form-label"></label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a asp-action="Index" class="btn btn-light">
+                Anuluj
+            </a>
+
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save"></i>
+                Zapisz zmiany
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

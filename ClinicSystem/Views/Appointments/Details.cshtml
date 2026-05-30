@@ -1,0 +1,196 @@
+﻿@model ClinicSystem.Models.Appointment
+
+@{
+    ViewData["Title"] = "Szczegóły wizyty";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Wizyta pacjenta</h1>
+        <p>Pełne informacje o terminie, pacjencie, lekarzu oraz dokumentacji medycznej.</p>
+    </div>
+
+    <div class="header-actions">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+            <i class="bi bi-pencil"></i>
+            Edytuj
+        </a>
+
+        <a asp-action="Index" class="btn btn-light">
+            <i class="bi bi-arrow-left"></i>
+            Powrót
+        </a>
+    </div>
+</div>
+
+<div class="appointment-details-hero">
+    <div class="appointment-date-big">
+        <span>@Model.AppointmentDate.ToString("dd.MM.yyyy")</span>
+        <strong>@Model.AppointmentDate.ToString("HH:mm")</strong>
+    </div>
+
+    <div class="appointment-hero-info">
+        <h2>@Model.Patient?.FirstName @Model.Patient?.LastName</h2>
+        <p>
+            <i class="bi bi-person-badge"></i>
+            Dr @Model.Doctor?.FirstName @Model.Doctor?.LastName
+            @if (Model.Doctor?.Specialization != null)
+            {
+                <span> — @Model.Doctor.Specialization.Name</span>
+            }
+        </p>
+    </div>
+
+    <div>
+        @if (Model.Status == ClinicSystem.Models.AppointmentStatus.Scheduled)
+        {
+            <span class="large-status appointment-status-blue">
+                <i class="bi bi-calendar-check"></i>
+                Zaplanowana
+            </span>
+        }
+        else if (Model.Status == ClinicSystem.Models.AppointmentStatus.Completed)
+        {
+            <span class="large-status active">
+                <i class="bi bi-check-circle"></i>
+                Zrealizowana
+            </span>
+        }
+        else if (Model.Status == ClinicSystem.Models.AppointmentStatus.Cancelled)
+        {
+            <span class="large-status inactive">
+                <i class="bi bi-x-circle"></i>
+                Odwołana
+            </span>
+        }
+        else
+        {
+            <span class="large-status appointment-status-warning">
+                <i class="bi bi-exclamation-circle"></i>
+                Pacjent nieobecny
+            </span>
+        }
+    </div>
+</div>
+
+<div class="dashboard-grid mt-4">
+    <div class="info-card">
+        <div class="panel-card-header">
+            <div>
+                <h3>Pacjent</h3>
+                <p>Dane pacjenta przypisanego do wizyty.</p>
+            </div>
+            <i class="bi bi-person panel-icon"></i>
+        </div>
+
+        <div class="info-list">
+            <div class="info-row">
+                <span>Imię i nazwisko</span>
+                <strong>@Model.Patient?.FirstName @Model.Patient?.LastName</strong>
+            </div>
+
+            <div class="info-row">
+                <span>PESEL</span>
+                <strong>@Model.Patient?.PESEL</strong>
+            </div>
+
+            <div class="info-row">
+                <span>Telefon</span>
+                <strong>@(string.IsNullOrWhiteSpace(Model.Patient?.PhoneNumber) ? "Brak" : Model.Patient.PhoneNumber)</strong>
+            </div>
+
+            <div class="info-row">
+                <span>E-mail</span>
+                <strong>@(string.IsNullOrWhiteSpace(Model.Patient?.Email) ? "Brak" : Model.Patient.Email)</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-card">
+        <div class="panel-card-header">
+            <div>
+                <h3>Lekarz</h3>
+                <p>Dane lekarza prowadzącego wizytę.</p>
+            </div>
+            <i class="bi bi-person-badge panel-icon"></i>
+        </div>
+
+        <div class="info-list">
+            <div class="info-row">
+                <span>Lekarz</span>
+                <strong>Dr @Model.Doctor?.FirstName @Model.Doctor?.LastName</strong>
+            </div>
+
+            <div class="info-row">
+                <span>Specjalizacja</span>
+                <strong>@(Model.Doctor?.Specialization?.Name ?? "Brak")</strong>
+            </div>
+
+            <div class="info-row">
+                <span>Gabinet</span>
+                <strong>@(string.IsNullOrWhiteSpace(Model.Doctor?.OfficeNumber) ? "Brak" : Model.Doctor.OfficeNumber)</strong>
+            </div>
+
+            <div class="info-row">
+                <span>Numer PWZ</span>
+                <strong>@Model.Doctor?.LicenseNumber</strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="panel-card mt-4">
+    <div class="panel-card-header">
+        <div>
+            <h3>Powód wizyty</h3>
+            <p>Informacja podana podczas rejestracji wizyty.</p>
+        </div>
+        <i class="bi bi-chat-left-medical panel-icon"></i>
+    </div>
+
+    <p class="description-text">@Model.Reason</p>
+</div>
+
+<div class="dashboard-grid mt-4">
+    <div class="panel-card">
+        <div class="panel-card-header">
+            <div>
+                <h3>Notatka lekarza</h3>
+                <p>Opis przebiegu konsultacji.</p>
+            </div>
+            <i class="bi bi-file-medical panel-icon"></i>
+        </div>
+
+        <p class="description-text">
+            @(string.IsNullOrWhiteSpace(Model.DoctorNote) ? "Brak notatki lekarza." : Model.DoctorNote)
+        </p>
+    </div>
+
+    <div class="panel-card">
+        <div class="panel-card-header">
+            <div>
+                <h3>Diagnoza</h3>
+                <p>Rozpoznanie medyczne.</p>
+            </div>
+            <i class="bi bi-clipboard2-pulse panel-icon"></i>
+        </div>
+
+        <p class="description-text">
+            @(string.IsNullOrWhiteSpace(Model.Diagnosis) ? "Brak diagnozy." : Model.Diagnosis)
+        </p>
+    </div>
+</div>
+
+<div class="panel-card mt-4">
+    <div class="panel-card-header">
+        <div>
+            <h3>Zalecenia</h3>
+            <p>Rekomendacje przekazane pacjentowi.</p>
+        </div>
+        <i class="bi bi-prescription2 panel-icon"></i>
+    </div>
+
+    <p class="description-text">
+        @(string.IsNullOrWhiteSpace(Model.Recomendations) ? "Brak zaleceń." : Model.Recomendations)
+    </p>
+</div>

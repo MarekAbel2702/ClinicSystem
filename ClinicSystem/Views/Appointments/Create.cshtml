@@ -1,0 +1,152 @@
+﻿@model ClinicSystem.Models.Appointment
+
+@{
+    ViewData["Title"] = "Umów wizytę";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Umów wizytę</h1>
+        <p>Dodaj nową wizytę pacjenta u wybranego lekarza.</p>
+    </div>
+
+    <div class="header-actions">
+        <a asp-action="Index" class="btn btn-light">
+            <i class="bi bi-arrow-left"></i>
+            Powrót
+        </a>
+    </div>
+</div>
+
+<div class="form-card">
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="form-section-title">
+            <i class="bi bi-calendar-plus"></i>
+            <div>
+                <h3>Dane wizyty</h3>
+                <p>Wybierz pacjenta, lekarza oraz termin konsultacji.</p>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            @if (User.IsInRole("Pacjent"))
+            {
+                <input type="hidden" asp-for="PatientId" />
+
+                <div class="col-md-6">
+                    <label class="form-label">Pacjent</label>
+                    <div class="readonly-field">
+                        Twoje konto pacjenta
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="col-md-6">
+                    <label asp-for="PatientId" class="form-label"></label>
+                    <select asp-for="PatientId" class="form-select" asp-items="ViewBag.Patients">
+                        <option value="">-- wybierz pacjenta --</option>
+                    </select>
+                    <span asp-validation-for="PatientId" class="text-danger"></span>
+                </div>
+            }
+
+            <div class="col-md-6">
+                <label asp-for="DoctorId" class="form-label"></label>
+                <select asp-for="DoctorId" class="form-select" asp-items="ViewBag.Doctors">
+                    <option value="">-- wybierz lekarza --</option>
+                </select>
+                <span asp-validation-for="DoctorId" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="AppointmentDate" class="form-label"></label>
+                <input asp-for="AppointmentDate" class="form-control" type="datetime-local" />
+                <span asp-validation-for="AppointmentDate" class="text-danger"></span>
+            </div>
+
+            @if (User.IsInRole("Pacjent"))
+            {
+                <input type="hidden" asp-for="Status" value="Scheduled" />
+
+                <div class="col-md-6">
+                    <label class="form-label">Status</label>
+                    <div class="readonly-field">
+                        Zaplanowana
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="col-md-6">
+                    <label asp-for="Status" class="form-label"></label>
+                    <select asp-for="Status" class="form-select">
+                        <option value="Scheduled">Zaplanowana</option>
+                        <option value="Completed">Zrealizowana</option>
+                        <option value="Cancelled">Odwołana</option>
+                        <option value="NoShow">Pacjent nieobecny</option>
+                    </select>
+                    <span asp-validation-for="Status" class="text-danger"></span>
+                </div>
+            }
+
+            <div class="col-md-12">
+                <label asp-for="Reason" class="form-label"></label>
+                <textarea asp-for="Reason" class="form-control" rows="3" placeholder="Np. ból gardła, konsultacja kontrolna, skierowanie..."></textarea>
+                <span asp-validation-for="Reason" class="text-danger"></span>
+            </div>
+        </div>
+
+        @if (!User.IsInRole("Pacjent"))
+        {
+            <hr class="section-divider" />
+
+            <div class="form-section-title">
+                <i class="bi bi-journal-medical"></i>
+                <div>
+                    <h3>Dokumentacja medyczna</h3>
+                    <p>Opcjonalne pola do uzupełnienia przez lekarza.</p>
+                </div>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-12">
+                    <label asp-for="DoctorNote" class="form-label"></label>
+                    <textarea asp-for="DoctorNote" class="form-control" rows="3" placeholder="Notatka lekarza..."></textarea>
+                    <span asp-validation-for="DoctorNote" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Diagnosis" class="form-label"></label>
+                    <textarea asp-for="Diagnosis" class="form-control" rows="4" placeholder="Diagnoza..."></textarea>
+                    <span asp-validation-for="Diagnosis" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Recomendations" class="form-label"></label>
+                    <textarea asp-for="Recomendations" class="form-control" rows="4" placeholder="Zalecenia dla pacjenta..."></textarea>
+                    <span asp-validation-for="Recomendations" class="text-danger"></span>
+                </div>
+            </div>
+        }
+
+        <div class="form-actions">
+            <a asp-action="Index" class="btn btn-light">
+                Anuluj
+            </a>
+
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check2-circle"></i>
+                Zapisz wizytę
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

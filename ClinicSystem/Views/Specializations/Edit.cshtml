@@ -1,0 +1,71 @@
+﻿@model ClinicSystem.Models.Specialization
+
+@{
+    ViewData["Title"] = "Edytuj specjalizację";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Edytuj specjalizację</h1>
+        <p>Aktualizacja danych specjalizacji: @Model.Name.</p>
+    </div>
+
+    <div class="header-actions">
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-light">
+            <i class="bi bi-eye"></i>
+            Szczegóły
+        </a>
+
+        <a asp-action="Index" class="btn btn-light">
+            <i class="bi bi-arrow-left"></i>
+            Powrót
+        </a>
+    </div>
+</div>
+
+<div class="form-card">
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="form-section-title">
+            <i class="bi bi-diagram-3"></i>
+            <div>
+                <h3>Dane specjalizacji</h3>
+                <p>Edytuj nazwę oraz opis specjalizacji.</p>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-12">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-12">
+                <label asp-for="Description" class="form-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a asp-action="Index" class="btn btn-light">
+                Anuluj
+            </a>
+
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save"></i>
+                Zapisz zmiany
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

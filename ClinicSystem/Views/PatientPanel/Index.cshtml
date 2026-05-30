@@ -1,0 +1,216 @@
+﻿@model ClinicSystem.ViewModels.PatientPanelViewModel
+
+@{
+    ViewData["Title"] = "Mój panel";
+    Layout = "~/Views/Shared/_PublicLayout.cshtml";
+}
+
+<section class="patient-panel-section">
+    <div class="public-container">
+        <div class="patient-panel-header">
+            <div>
+                <span>Panel pacjenta</span>
+                <h1>Witaj, @Model.Patient?.FirstName!</h1>
+                <p>Sprawdź swoje wizyty, dane pacjenta i historię leczenia.</p>
+            </div>
+
+            <div class="patient-panel-actions">
+                <a asp-controller="Appointments" asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-calendar-plus"></i>
+                    Umów wizytę
+                </a>
+
+                <a asp-controller="Home" asp-action="Index" class="btn btn-light">
+                    <i class="bi bi-house"></i>
+                    Strona główna
+                </a>
+            </div>
+        </div>
+
+        <div class="patient-stats-grid">
+            <div class="patient-stat-card">
+                <i class="bi bi-calendar-check"></i>
+                <strong>@Model.AllAppointmentsCount</strong>
+                <span>Wszystkie wizyty</span>
+            </div>
+
+            <div class="patient-stat-card">
+                <i class="bi bi-clock-history"></i>
+                <strong>@Model.UpcomingAppointmentsCount</strong>
+                <span>Nadchodzące wizyty</span>
+            </div>
+
+            <div class="patient-stat-card">
+                <i class="bi bi-check2-circle"></i>
+                <strong>@Model.CompletedAppointmentsCount</strong>
+                <span>Zrealizowane wizyty</span>
+            </div>
+        </div>
+
+        <div class="patient-panel-grid">
+            <div class="patient-profile-public-card">
+                <div class="profile-avatar">
+                    @Model.Patient?.FirstName.Substring(0, 1)@Model.Patient?.LastName.Substring(0, 1)
+                </div>
+
+                <h2>@Model.Patient?.FirstName @Model.Patient?.LastName</h2>
+                <p>Pacjent MediClinic</p>
+
+                <div class="info-list mt-4">
+                    <div class="info-row">
+                        <span>PESEL</span>
+                        <strong>@Model.Patient?.PESEL</strong>
+                    </div>
+
+                    <div class="info-row">
+                        <span>Data urodzenia</span>
+                        <strong>@Model.Patient?.DateOfBirth.ToString("dd.MM.yyyy")</strong>
+                    </div>
+
+                    <div class="info-row">
+                        <span>Telefon</span>
+                        <strong>@(string.IsNullOrWhiteSpace(Model.Patient?.PhoneNumber) ? "Brak" : Model.Patient.PhoneNumber)</strong>
+                    </div>
+
+                    <div class="info-row">
+                        <span>E-mail</span>
+                        <strong>@(string.IsNullOrWhiteSpace(Model.Patient?.Email) ? "Brak" : Model.Patient.Email)</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="patient-appointments-card">
+                <div class="panel-card-header">
+                    <div>
+                        <h3>Nadchodzące wizyty</h3>
+                        <p>Twoje najbliższe zaplanowane konsultacje.</p>
+                    </div>
+
+                    <i class="bi bi-calendar2-week panel-icon"></i>
+                </div>
+
+                @if (Model.UpcomingAppointments.Any())
+                {
+                    <div class="appointment-list">
+                        @foreach (var appointment in Model.UpcomingAppointments)
+                        {
+                            <div class="appointment-item">
+                                <div class="appointment-date">
+                                    <strong>@appointment.AppointmentDate.ToString("dd.MM")</strong>
+                                    <span>@appointment.AppointmentDate.ToString("HH:mm")</span>
+                                </div>
+
+                                <div class="appointment-info">
+                                    <h4>
+                                        Dr @appointment.Doctor?.FirstName @appointment.Doctor?.LastName
+                                    </h4>
+
+                                    <p>
+                                        @(appointment.Doctor?.Specialization?.Name ?? "Lekarz")
+                                        — @appointment.Reason
+                                    </p>
+                                </div>
+
+                                <span class="badge bg-primary">Zaplanowana</span>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="bi bi-calendar-x"></i>
+                        <p>Nie masz nadchodzących wizyt.</p>
+
+                        <a asp-controller="Appointments" asp-action="Create" class="btn btn-primary mt-3">
+                            Umów wizytę
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="patient-history-card">
+            <div class="panel-card-header">
+                <div>
+                    <h3>Historia wizyt</h3>
+                    <p>Zrealizowane, odwołane i archiwalne wizyty.</p>
+                </div>
+
+                <i class="bi bi-journal-medical panel-icon"></i>
+            </div>
+
+            @if (Model.PastAppointments.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table modern-table">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Lekarz</th>
+                                <th>Specjalizacja</th>
+                                <th>Powód</th>
+                                <th>Status</th>
+                                <th>Diagnoza</th>
+                                <th>Zalecenia</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var appointment in Model.PastAppointments)
+                            {
+                                <tr>
+                                    <td>@appointment.AppointmentDate.ToString("dd.MM.yyyy HH:mm")</td>
+
+                                    <td>
+                                        Dr @appointment.Doctor?.FirstName @appointment.Doctor?.LastName
+                                    </td>
+
+                                    <td>
+                                        @(appointment.Doctor?.Specialization?.Name ?? "Brak")
+                                    </td>
+
+                                    <td>@appointment.Reason</td>
+
+                                    <td>
+                                        @if (appointment.Status == ClinicSystem.Models.AppointmentStatus.Completed)
+                                        {
+                                            <span class="badge bg-success">Zrealizowana</span>
+                                        }
+                                        else if (appointment.Status == ClinicSystem.Models.AppointmentStatus.Cancelled)
+                                        {
+                                            <span class="badge bg-danger">Odwołana</span>
+                                        }
+                                        else if (appointment.Status == ClinicSystem.Models.AppointmentStatus.NoShow)
+                                        {
+                                            <span class="badge bg-warning text-dark">Nieobecność</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-primary">Zaplanowana</span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        @(string.IsNullOrWhiteSpace(appointment.Diagnosis) ? "Brak" : appointment.Diagnosis)
+                                    </td>
+
+                                    <td>
+                                        @(string.IsNullOrWhiteSpace(appointment.Recomendations) ? "Brak" : appointment.Recomendations)
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <p>Brak historii wizyt.</p>
+                </div>
+            }
+        </div>
+    </div>
+</section>

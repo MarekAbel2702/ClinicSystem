@@ -1,0 +1,79 @@
+﻿@model ClinicSystem.Models.Doctor
+
+@{
+    ViewData["Title"] = "Usuń lekarza";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Usuń lekarza</h1>
+        <p>Potwierdź usunięcie lekarza z systemu.</p>
+    </div>
+
+    <div class="header-actions">
+        <a asp-action="Index" class="btn btn-light">
+            <i class="bi bi-arrow-left"></i>
+            Powrót
+        </a>
+    </div>
+</div>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show custom-alert" role="alert">
+        <i class="bi bi-exclamation-triangle"></i>
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="danger-card">
+    <div class="danger-icon">
+        <i class="bi bi-exclamation-triangle"></i>
+    </div>
+
+    <div>
+        <h2>Czy na pewno chcesz usunąć tego lekarza?</h2>
+        <p>
+            Tej operacji nie można cofnąć. Lekarza można usunąć tylko wtedy,
+            gdy nie ma przypisanych żadnych wizyt.
+        </p>
+    </div>
+</div>
+
+<div class="info-card mt-4">
+    <div class="info-list">
+        <div class="info-row">
+            <span>Lekarz</span>
+            <strong>Dr @Model.FirstName @Model.LastName</strong>
+        </div>
+
+        <div class="info-row">
+            <span>Specjalizacja</span>
+            <strong>@(Model.Specialization?.Name ?? "Brak")</strong>
+        </div>
+
+        <div class="info-row">
+            <span>Numer PWZ</span>
+            <strong>@Model.LicenseNumber</strong>
+        </div>
+
+        <div class="info-row">
+            <span>Liczba wizyt</span>
+            <strong>@Model.Appointments.Count</strong>
+        </div>
+    </div>
+
+    <form asp-action="Delete" method="post" class="form-actions">
+        <input type="hidden" asp-for="Id" />
+
+        <a asp-action="Index" class="btn btn-light">
+            Anuluj
+        </a>
+
+        <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash"></i>
+            Usuń lekarza
+        </button>
+    </form>
+</div>

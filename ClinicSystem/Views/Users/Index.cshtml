@@ -1,0 +1,139 @@
+﻿@model IEnumerable<ClinicSystem.ViewModels.UserRoleViewModel>
+
+@{
+    ViewData["Title"] = "Użytkownicy";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Użytkownicy</h1>
+        <p>Zarządzanie kontami użytkowników oraz rolami dostępu w systemie.</p>
+    </div>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show custom-alert" role="alert">
+        <i class="bi bi-check-circle"></i>
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="table-card">
+    <div class="table-toolbar">
+        <div>
+            <h3>Lista użytkowników</h3>
+            <p>Wyszukuj konta i zmieniaj role użytkowników.</p>
+        </div>
+
+        <form asp-action="Index" method="get" class="table-search">
+            <i class="bi bi-search"></i>
+
+            <input type="text"
+                   name="searchString"
+                   value="@ViewData["CurrentFilter"]"
+                   placeholder="Szukaj użytkownika..." />
+
+            <button type="submit" class="btn btn-primary">
+                Szukaj
+            </button>
+
+            <a asp-action="Index" class="btn btn-light">
+                Wyczyść
+            </a>
+        </form>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table modern-table align-middle">
+                <thead>
+                    <tr>
+                        <th>Użytkownik</th>
+                        <th>E-mail</th>
+                        <th>Rola</th>
+                        <th>Data utworzenia</th>
+                        <th class="text-end">Akcje</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="person-cell">
+                                    <div class="person-avatar">
+                                        @{
+                                            var firstInitial = string.IsNullOrWhiteSpace(user.FirstName) ? "U" : user.FirstName.Substring(0, 1);
+                                            var lastInitial = string.IsNullOrWhiteSpace(user.LastName) ? "" : user.LastName.Substring(0, 1);
+                                        }
+                                    @firstInitial@lastInitial
+                                </div>
+
+                                <div>
+                                    <strong>
+                                        @(string.IsNullOrWhiteSpace(user.FirstName + user.LastName)
+                                                                            ? "Użytkownik systemu"
+                                                                            : $"{user.FirstName} {user.LastName}")
+                                </strong>
+                                <span>ID: @user.UserId.Substring(0, 8)...</span>
+                            </div>
+                        </div>
+                    </td>
+
+                            <td>@user.Email</td>
+
+                            <td>
+                        @if (user.CurrentRole == "Administrator")
+                                {
+                                    <span class="role-badge role-admin">Administrator</span>
+                                }
+                                else if (user.CurrentRole == "Recepcjonista")
+                                {
+                                    <span class="role-badge role-reception">Recepcjonista</span>
+                                }
+                                else if (user.CurrentRole == "Lekarz")
+                                {
+                                    <span class="role-badge role-doctor">Lekarz</span>
+                                }
+                                else if (user.CurrentRole == "Pacjent")
+                                {
+                                    <span class="role-badge role-patient">Pacjent</span>
+                                }
+                                else
+                                {
+                                    <span class="role-badge role-none">Brak roli</span>
+                                }
+                            </td>
+
+                            <td>@user.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
+
+                            <td>
+                                <div class="action-buttons">
+                                    <a asp-action="Details" asp-route-id="@user.UserId" class="btn btn-light">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+
+                                    <a asp-action="EditRole" asp-route-id="@user.UserId" class="btn btn-primary">
+                                        <i class="bi bi-shield-check"></i>
+                                        Rola
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <i class="bi bi-people"></i>
+            <p>Brak użytkowników spełniających kryteria wyszukiwania.</p>
+        </div>
+    }
+</div>

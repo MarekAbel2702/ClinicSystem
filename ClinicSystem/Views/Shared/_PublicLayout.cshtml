@@ -1,0 +1,123 @@
+﻿<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - MediClinic</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+
+<body class="public-body">
+    <nav class="clinic-navbar">
+        <div class="public-container clinic-nav-inner">
+
+            <a asp-controller="Home" asp-action="Index" class="clinic-nav-brand">
+                <span class="clinic-nav-logo">
+                    <i class="bi bi-heart-pulse"></i>
+                </span>
+
+                <div>
+                    <strong>MediClinic</strong>
+                    <small>Przychodnia lekarska</small>
+                </div>
+            </a>
+
+            <div class="clinic-nav-menu">
+                <a href="#services">Usługi</a>
+                <a href="#doctors">Lekarze</a>
+                <a href="#about">O nas</a>
+                <a href="#contact">Kontakt</a>
+            </div>
+
+            <div class="clinic-nav-actions">
+                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                    @if (User.IsInRole("Pacjent"))
+                    {
+                        <a asp-controller="PatientPanel" asp-action="Index" class="btn btn-light">
+                            Mój panel
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Dashboard" asp-action="Index" class="btn btn-light">
+                            Panel systemu
+                        </a>
+                    }
+
+                    <form asp-controller="Account" asp-action="Logout" method="post">
+                        <button type="submit" class="btn btn-primary">
+                            Wyloguj
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-light">
+                        Zaloguj
+                    </a>
+
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-primary">
+                        Rejestracja
+                    </a>
+                }
+            </div>
+
+        </div>
+    </nav>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <footer class="public-footer">
+        <div class="public-container footer-grid">
+            <div>
+                <div class="footer-brand">
+                    <i class="bi bi-heart-pulse"></i>
+                    <strong>MediClinic</strong>
+                </div>
+
+                <p>
+                    Nowoczesna przychodnia lekarska oferująca kompleksową opiekę
+                    medyczną dla dzieci, dorosłych i seniorów.
+                </p>
+            </div>
+
+            <div>
+                <h4>Nawigacja</h4>
+                <a href="#services">Usługi</a>
+                <a href="#doctors">Lekarze</a>
+                <a href="#contact">Kontakt</a>
+                <a asp-controller="Dashboard" asp-action="Index">Panel systemu</a>
+            </div>
+
+            <div>
+                <h4>Kontakt</h4>
+                <p>
+                    ul. Zdrowa 12<br />
+                    00-001 Warszawa<br />
+                    tel. 500 600 700<br />
+                    kontakt@mediclinic.pl
+                </p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            © @DateTime.Now.Year MediClinic. System informatyczny przychodni lekarskiej.
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

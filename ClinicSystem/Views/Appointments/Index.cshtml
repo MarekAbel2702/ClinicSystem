@@ -1,0 +1,174 @@
+﻿@model IEnumerable<ClinicSystem.Models.Appointment>
+
+@{
+    ViewData["Title"] = "Wizyty";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Wizyty</h1>
+        <p>Terminarz wizyt pacjentów, statusy konsultacji i dokumentacja medyczna.</p>
+    </div>
+
+    <div class="header-actions">
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-calendar-plus"></i>
+            Umów wizytę
+        </a>
+    </div>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show custom-alert" role="alert">
+        <i class="bi bi-check-circle"></i>
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show custom-alert" role="alert">
+        <i class="bi bi-exclamation-triangle"></i>
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="table-card">
+    <div class="table-toolbar appointment-toolbar">
+        <div>
+            <h3>Terminarz wizyt</h3>
+            <p>Filtruj wizyty według pacjenta, lekarza, statusu lub konkretnego dnia.</p>
+        </div>
+
+        <form asp-action="Index" method="get" class="appointment-filter">
+            <div class="filter-field wide">
+                <i class="bi bi-search"></i>
+                <input type="text"
+                       name="searchString"
+                       value="@ViewData["CurrentFilter"]"
+                       placeholder="Szukaj pacjenta, lekarza, PESEL..." />
+            </div>
+
+            <select name="doctorId" class="form-select">
+                <option value="">Wszyscy lekarze</option>
+                @foreach (var item in (SelectList)ViewBag.Doctors)
+                {
+                    if (ViewData["CurrentDoctor"] != null && ViewData["CurrentDoctor"]!.ToString() == item.Value)
+                    {
+                        <option value="@item.Value" selected>@item.Text</option>
+                    }
+                    else
+                    {
+                        <option value="@item.Value">@item.Text</option>
+                    }
+                }
+            </select>
+
+            <select name="status" class="form-select">
+                <option value="">Wszystkie statusy</option>
+                <option value="Scheduled" selected="@(ViewData["CurrentStatus"]?.ToString() == "Scheduled")">Zaplanowana</option>
+                <option value="Completed" selected="@(ViewData["CurrentStatus"]?.ToString() == "Completed")">Zrealizowana</option>
+                <option value="Cancelled" selected="@(ViewData["CurrentStatus"]?.ToString() == "Cancelled")">Odwołana</option>
+                <option value="NoShow" selected="@(ViewData["CurrentStatus"]?.ToString() == "NoShow")">Pacjent nieobecny</option>
+            </select>
+
+            <input type="date"
+                   name="date"
+                   value="@ViewData["CurrentDate"]"
+                   class="form-control" />
+
+            <button type="submit" class="btn btn-primary">
+                Filtruj
+            </button>
+
+            <a asp-action="Index" class="btn btn-light">
+                Wyczyść
+            </a>
+        </form>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="appointments-timeline">
+            @foreach (var appointment in Model)
+            {
+                <div class="timeline-item">
+                    <div class="timeline-date">
+                        <strong>@appointment.AppointmentDate.ToString("dd.MM")</strong>
+                        <span>@appointment.AppointmentDate.ToString("HH:mm")</span>
+                    </div>
+
+                    <div class="timeline-content">
+                        <div class="timeline-main">
+                            <div>
+                                <h3>@appointment.Patient?.FirstName @appointment.Patient?.LastName</h3>
+                                <p>
+                                    <i class="bi bi-person-badge"></i>
+                                    Dr @appointment.Doctor?.FirstName @appointment.Doctor?.LastName
+                                    @if (appointment.Doctor?.Specialization != null)
+                                    {
+                                        <span> — @appointment.Doctor.Specialization.Name</span>
+                                    }
+                                </p>
+                            </div>
+
+                            <div>
+                                @if (appointment.Status == ClinicSystem.Models.AppointmentStatus.Scheduled)
+                                {
+                                    <span class="badge bg-primary">Zaplanowana</span>
+                                }
+                                else if (appointment.Status == ClinicSystem.Models.AppointmentStatus.Completed)
+                                {
+                                    <span class="badge bg-success">Zrealizowana</span>
+                                }
+                                else if (appointment.Status == ClinicSystem.Models.AppointmentStatus.Cancelled)
+                                {
+                                    <span class="badge bg-danger">Odwołana</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark">Pacjent nieobecny</span>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="timeline-reason">
+                            <i class="bi bi-chat-left-medical"></i>
+                            @appointment.Reason
+                        </div>
+
+                        <div class="timeline-actions">
+                            <a asp-action="Details" asp-route-id="@appointment.Id" class="btn btn-light">
+                                <i class="bi bi-eye"></i>
+                                Szczegóły
+                            </a>
+
+                            <a asp-action="Edit" asp-route-id="@appointment.Id" class="btn btn-light">
+                                <i class="bi bi-pencil"></i>
+                                Edytuj
+                            </a>
+
+                            <a asp-action="Delete" asp-route-id="@appointment.Id" class="btn btn-danger">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <i class="bi bi-calendar-x"></i>
+            <p>Brak wizyt spełniających wybrane kryteria.</p>
+
+            <a asp-action="Create" class="btn btn-primary mt-3">
+                Umów pierwszą wizytę
+            </a>
+        </div>
+    }
+</div>

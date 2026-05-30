@@ -1,0 +1,106 @@
+﻿@model ClinicSystem.Models.Patient
+
+@{
+    ViewData["Title"] = "Dodaj pacjenta";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Dodaj pacjenta</h1>
+        <p>Utwórz nową kartotekę pacjenta w systemie przychodni.</p>
+    </div>
+
+    <div class="header-actions">
+        <a asp-action="Index" class="btn btn-light">
+            <i class="bi bi-arrow-left"></i>
+            Powrót
+        </a>
+    </div>
+</div>
+
+<div class="form-card">
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="form-section-title">
+            <i class="bi bi-person-vcard"></i>
+            <div>
+                <h3>Dane podstawowe</h3>
+                <p>Najważniejsze dane identyfikacyjne pacjenta.</p>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="FirstName" class="form-label"></label>
+                <input asp-for="FirstName" class="form-control" placeholder="np. Jan" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="LastName" class="form-label"></label>
+                <input asp-for="LastName" class="form-control" placeholder="np. Kowalski" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="PESEL" class="form-label"></label>
+                <input asp-for="PESEL" class="form-control" placeholder="11 cyfr" maxlength="11" />
+                <span asp-validation-for="PESEL" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="DateOfBirth" class="form-label"></label>
+                <input asp-for="DateOfBirth" class="form-control" type="date" />
+                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+            </div>
+        </div>
+
+        <hr class="section-divider" />
+
+        <div class="form-section-title">
+            <i class="bi bi-telephone"></i>
+            <div>
+                <h3>Dane kontaktowe</h3>
+                <p>Telefon, adres e-mail i adres zamieszkania.</p>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="PhoneNumber" class="form-label"></label>
+                <input asp-for="PhoneNumber" class="form-control" placeholder="np. 500 600 700" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" placeholder="np. pacjent@email.pl" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-12">
+                <label asp-for="Address" class="form-label"></label>
+                <input asp-for="Address" class="form-control" placeholder="np. ul. Zdrowa 12, 00-001 Warszawa" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a asp-action="Index" class="btn btn-light">
+                Anuluj
+            </a>
+
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check2-circle"></i>
+                Zapisz pacjenta
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

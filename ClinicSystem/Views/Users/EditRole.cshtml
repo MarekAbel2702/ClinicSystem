@@ -1,0 +1,122 @@
+﻿@model ClinicSystem.ViewModels.UserRoleViewModel
+
+@{
+    ViewData["Title"] = "Zmień rolę";
+    var roles = ViewBag.Roles as List<string> ?? new List<string>();
+}
+
+<div class="page-header">
+    <div>
+        <h1>Zmień rolę</h1>
+        <p>Nadaj użytkownikowi odpowiednie uprawnienia w systemie.</p>
+    </div>
+
+    <div class="header-actions">
+        <a asp-action="Index" class="btn btn-light">
+            <i class="bi bi-arrow-left"></i>
+            Powrót
+        </a>
+    </div>
+</div>
+
+<div class="details-grid">
+    <div class="profile-card">
+        <div class="profile-avatar">
+            @{
+                var firstInitial = string.IsNullOrWhiteSpace(Model.FirstName) ? "U" : Model.FirstName.Substring(0, 1);
+                var lastInitial = string.IsNullOrWhiteSpace(Model.LastName) ? "" : Model.LastName.Substring(0, 1);
+            }
+            @firstInitial@lastInitial
+        </div>
+
+        <h2>
+            @(string.IsNullOrWhiteSpace(Model.FirstName + Model.LastName)
+                        ? "Użytkownik systemu"
+                        : $"{Model.FirstName} {Model.LastName}")
+        </h2>
+
+        <p>@Model.Email</p>
+
+        <div class="profile-tags">
+            <span>
+                <i class="bi bi-shield-check"></i>
+                Aktualna rola: @Model.CurrentRole
+            </span>
+
+            <span>
+                <i class="bi bi-calendar3"></i>
+                Konto: @Model.CreatedAt.ToString("dd.MM.yyyy")
+            </span>
+        </div>
+    </div>
+
+    <div class="form-card">
+        <form asp-action="EditRole" method="post">
+            <input type="hidden" asp-for="UserId" />
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="form-section-title">
+                <i class="bi bi-shield-lock"></i>
+                <div>
+                    <h3>Uprawnienia użytkownika</h3>
+                    <p>Wybierz jedną z dostępnych ról systemowych.</p>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="SelectedRole" class="form-label">Nowa rola</label>
+
+                <select asp-for="SelectedRole" class="form-select">
+                    <option value="">-- wybierz rolę --</option>
+
+                    @foreach (var role in roles)
+                    {
+                        <option value="@role">@role</option>
+                    }
+                </select>
+
+                <span asp-validation-for="SelectedRole" class="text-danger"></span>
+            </div>
+
+            <div class="role-info-grid">
+                <div>
+                    <strong>Administrator</strong>
+                    <span>Pełny dostęp do systemu, użytkowników i konfiguracji.</span>
+                </div>
+
+                <div>
+                    <strong>Recepcjonista</strong>
+                    <span>Obsługa pacjentów, lekarzy, wizyt i specjalizacji.</span>
+                </div>
+
+                <div>
+                    <strong>Lekarz</strong>
+                    <span>Dostęp do dashboardu, lekarzy i wizyt.</span>
+                </div>
+
+                <div>
+                    <strong>Pacjent</strong>
+                    <span>Konto pacjenta, bez dostępu do panelu administracyjnego.</span>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a asp-action="Index" class="btn btn-light">
+                    Anuluj
+                </a>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save"></i>
+                    Zapisz rolę
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

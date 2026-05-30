@@ -1,0 +1,67 @@
+﻿@model ClinicSystem.Models.Specialization
+
+@{
+    ViewData["Title"] = "Dodaj specjalizację";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Dodaj specjalizację</h1>
+        <p>Utwórz nową specjalizację lekarską dostępną w przychodni.</p>
+    </div>
+
+    <div class="header-actions">
+        <a asp-action="Index" class="btn btn-light">
+            <i class="bi bi-arrow-left"></i>
+            Powrót
+        </a>
+    </div>
+</div>
+
+<div class="form-card">
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="form-section-title">
+            <i class="bi bi-diagram-3"></i>
+            <div>
+                <h3>Dane specjalizacji</h3>
+                <p>Podaj nazwę oraz krótki opis specjalizacji.</p>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-12">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" placeholder="np. Laryngolog" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-12">
+                <label asp-for="Description" class="form-label"></label>
+                <textarea asp-for="Description"
+                          class="form-control"
+                          rows="5"
+                          placeholder="Krótki opis specjalizacji..."></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a asp-action="Index" class="btn btn-light">
+                Anuluj
+            </a>
+
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check2-circle"></i>
+                Zapisz specjalizację
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

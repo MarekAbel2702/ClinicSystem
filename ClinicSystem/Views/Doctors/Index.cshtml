@@ -1,0 +1,161 @@
+﻿@model IEnumerable<ClinicSystem.Models.Doctor>
+
+@{
+    ViewData["Title"] = "Lekarze";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Lekarze</h1>
+        <p>Zarządzanie personelem medycznym oraz specjalizacjami lekarzy.</p>
+    </div>
+
+    <div class="header-actions">
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-person-plus"></i>
+            Dodaj lekarza
+        </a>
+    </div>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show custom-alert" role="alert">
+        <i class="bi bi-check-circle"></i>
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show custom-alert" role="alert">
+        <i class="bi bi-exclamation-triangle"></i>
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="table-card">
+    <div class="table-toolbar">
+        <div>
+            <h3>Lista lekarzy</h3>
+            <p>Wyszukuj lekarzy po danych osobowych, PWZ, gabinecie albo kontakcie.</p>
+        </div>
+
+        <form asp-action="Index" method="get" class="table-search doctors-search">
+            <i class="bi bi-search"></i>
+
+            <input type="text"
+                   name="searchString"
+                   value="@ViewData["CurrentFilter"]"
+                   placeholder="Szukaj lekarza..." />
+
+            <select name="specializationId" class="form-select">
+                <option value="">Wszystkie specjalizacje</option>
+                @foreach (var item in (SelectList)ViewBag.Specializations)
+                {
+                    if (ViewData["CurrentSpecialization"] != null && ViewData["CurrentSpecialization"]!.ToString() == item.Value)
+                    {
+                        <option value="@item.Value" selected>@item.Text</option>
+                    }
+                    else
+                    {
+                        <option value="@item.Value">@item.Text</option>
+                    }
+                }
+            </select>
+
+            <button type="submit" class="btn btn-primary">
+                Filtruj
+            </button>
+
+            <a asp-action="Index" class="btn btn-light">
+                Wyczyść
+            </a>
+        </form>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="doctor-card-grid">
+            @foreach (var doctor in Model)
+            {
+                <div class="doctor-card">
+                    <div class="doctor-top">
+                        <div class="doctor-avatar">
+                            @doctor.FirstName.Substring(0, 1)@doctor.LastName.Substring(0, 1)
+                        </div>
+
+                        <div class="doctor-status @(doctor.IsActive ? "active" : "inactive")">
+                            @(doctor.IsActive ? "Aktywny" : "Nieaktywny")
+                        </div>
+                    </div>
+
+                    <div class="doctor-body">
+                        <h3>Dr @doctor.FirstName @doctor.LastName</h3>
+
+                        <p class="doctor-specialization">
+                            <i class="bi bi-heart-pulse"></i>
+                            @(doctor.Specialization?.Name ?? "Brak specjalizacji")
+                        </p>
+
+                        <div class="doctor-meta">
+                            <span>
+                                <i class="bi bi-credit-card-2-front"></i>
+                                PWZ: @doctor.LicenseNumber
+                            </span>
+
+                            <span>
+                                <i class="bi bi-door-open"></i>
+                                Gabinet: @(string.IsNullOrWhiteSpace(doctor.OfficeNumber) ? "Brak" : doctor.OfficeNumber)
+                            </span>
+
+                            @if (!string.IsNullOrWhiteSpace(doctor.PhoneNumber))
+                            {
+                                <span>
+                                    <i class="bi bi-telephone"></i>
+                                    @doctor.PhoneNumber
+                                </span>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(doctor.Email))
+                            {
+                                <span>
+                                    <i class="bi bi-envelope"></i>
+                                    @doctor.Email
+                                </span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="doctor-actions">
+                        <a asp-action="Details" asp-route-id="@doctor.Id" class="btn btn-light">
+                            <i class="bi bi-eye"></i>
+                            Szczegóły
+                        </a>
+
+                        <a asp-action="Edit" asp-route-id="@doctor.Id" class="btn btn-light">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+
+                        <a asp-action="Delete" asp-route-id="@doctor.Id" class="btn btn-danger">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <i class="bi bi-person-badge"></i>
+            <p>Brak lekarzy w systemie.</p>
+
+            <a asp-action="Create" class="btn btn-primary mt-3">
+                Dodaj pierwszego lekarza
+            </a>
+        </div>
+    }
+</div>
